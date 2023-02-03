@@ -1,10 +1,18 @@
 import { style } from '@vanilla-extract/css';
 
+export const iframeCss = style({
+  margin: 0,
+  padding: 8,
+  border: 'none',
+  flex: 1,
+  alignSelf: 'stretch',
+});
+
 export const canvasPaneCss = style({
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'start',
-  padding: 8,
+  // padding: 8,
   flex: 1,
   overflowY: 'auto',
   overflowX: 'hidden',

@@ -1,7 +1,7 @@
-import { Accessor, Component, Suspense } from 'solid-js';
+import { Accessor } from 'solid-js';
 import { Show, VoidComponent } from 'solid-js';
-import { IFixtureTreeNode } from './tree';
-import { canvasPaneCss } from './styles.css';
+import { ICatalogTreeNode } from './tree';
+import { canvasPaneCss, iframeCss } from './styles.css';
 import { useCodex } from '../api';
 
 const ResetCodex = () => {
@@ -13,23 +13,22 @@ const ResetCodex = () => {
   return null;
 };
 
-function FixtureDisplay(props: { component: Component }) {
-  const C = props.component;
-  return (
-    <Suspense>
-      <ResetCodex />
-      <C />
-    </Suspense>
-  );
-}
-
 export const CanvasPane: VoidComponent<{
-  node: Accessor<IFixtureTreeNode | undefined>;
+  node: Accessor<ICatalogTreeNode | undefined>;
 }> = props => {
   return (
     <div classList={{ [canvasPaneCss]: true, 'dm-scrollbars': true }}>
-      <Show when={props.node()?.component} keyed>
-        {cmp => <FixtureDisplay component={cmp} />}
+      <Show when={props.node()?.story} keyed>
+        {story => (
+          <iframe
+            class={iframeCss}
+            src={`/_?${new URLSearchParams({
+              file: story.filePath,
+              name: story.propertyKey ?? '',
+            }).toString()}`}
+            height="100%"
+          ></iframe>
+        )}
       </Show>
     </div>
   );

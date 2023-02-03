@@ -1,30 +1,30 @@
-import { Breadcrumbs, BreadcrumbsItem, Button, ButtonGroup, Page, Spacer, Stack } from 'dolmen';
-import { createMemo, For, lazy, Match, Resource, Show, Switch, VoidComponent } from 'solid-js';
+import { Page, Stack } from 'dolmen';
+import { createMemo, lazy, Match, Switch, VoidComponent } from 'solid-js';
 import { useParams } from 'solid-start';
-import type { IFixture } from '../data/fixtures';
-import { DarkMode, LightMode, Tune } from '../icons';
+import type { IStory } from '../data/stories';
 import { useUserSettings } from '../settings';
 import { AdjustPane } from './AdjustPane';
+import { AppHeader } from './AppHeader';
 import { CanvasPane } from './CanvasPane';
 import { CatalogPane } from './CatalogPane';
 import { SourcePane } from './SourcePane';
 import { canvasSectionStyle } from './styles.css';
-import type { IFixtureTree, IFixtureTreeNode } from './tree';
+import type { ICatalogTree, ICatalogTreeNode } from './tree';
 
-export const CodexPage: VoidComponent<{ fixtures: Resource<IFixture[]> }> = ({ fixtures }) => {
-  const [settings, setSettings] = useUserSettings();
+export const CodexPage: VoidComponent<{ stories: IStory[] | undefined }> = props => {
+  const [settings] = useUserSettings();
 
-  const fixtureTree = createMemo<IFixtureTree>(() => {
-    const root: IFixtureTreeNode[] = [];
-    const byId: Record<string, IFixtureTreeNode> = {};
-    const toSort: IFixtureTreeNode[][] = [root];
-    const list = fixtures();
-    if (list) {
+  const catalogTree = createMemo<ICatalogTree>(() => {
+    const root: ICatalogTreeNode[] = [];
+    const byId: Record<string, ICatalogTreeNode> = {};
+    const toSort: ICatalogTreeNode[][] = [root];
+    const storyList = props.stories;
+    if (storyList) {
       // Build tree nodes by coalescing category names
-      for (const fix of list) {
+      for (const story of storyList) {
         let parent = root;
         const dirCategory: string[] = [];
-        for (const dirName of fix.category) {
+        for (const dirName of story.category) {
           dirCategory.push(dirName);
           let next = parent.find(f => f.title === dirName);
           if (!next) {
@@ -40,27 +40,27 @@ export const CodexPage: VoidComponent<{ fixtures: Resource<IFixture[]> }> = ({ f
         }
 
         const component = lazy(async () => {
-          let component = (await import(fix.path /* @vite-ignore */)).default;
+          let component = (await import(story.filePath /* @vite-ignore */)).default;
           if (!component) {
-            console.error(`No default export: ${fix.path}`);
+            console.error(`No default export: ${story.filePath}`);
             return { default: null };
           }
-          if (fix.propertyKey) {
-            component = component[fix.propertyKey];
+          if (story.propertyKey) {
+            component = component[story.propertyKey];
           }
           return {
             default: typeof component === 'function' ? component : null,
           };
         });
 
-        const node: IFixtureTreeNode = {
-          title: fix.name,
-          fixture: fix,
-          category: fix.category,
+        const node: ICatalogTreeNode = {
+          title: story.name,
+          story: story,
+          category: story.category,
           component,
         };
         parent.push(node);
-        byId[fix.urlPath] = node;
+        byId[story.urlPath] = node;
       }
 
       // Sort nodes
@@ -77,73 +77,18 @@ export const CodexPage: VoidComponent<{ fixtures: Resource<IFixture[]> }> = ({ f
 
   const params = useParams();
   const selected = createMemo(() => {
-    const id = params.fixture;
+    const id = params.id;
     if (id) {
-      return fixtureTree()?.byId[id] ?? null;
+      return catalogTree()?.byId[id] ?? null;
     }
   });
 
   return (
     <Page flexDirection="row">
-      <CatalogPane tree={fixtureTree()} />
+      <CatalogPane tree={catalogTree()} />
       <AdjustPane />
       <Stack class={canvasSectionStyle} alignItems="stretch">
-        <Page.Header gap="md">
-          <Page.Title>
-            <Show when={selected()} fallback={<i>Nothing selected</i>} keyed>
-              {fix => (
-                <Breadcrumbs>
-                  <For each={fix.category}>
-                    {category => <BreadcrumbsItem>{category}</BreadcrumbsItem>}
-                  </For>
-                  <BreadcrumbsItem>{fix.title}</BreadcrumbsItem>
-                </Breadcrumbs>
-              )}
-            </Show>
-          </Page.Title>
-          <Spacer />
-          <ButtonGroup>
-            <Button
-              onClick={() => {
-                setSettings({ displayMode: 'canvas' });
-              }}
-              selected={settings.displayMode === 'canvas'}
-            >
-              Canvas
-            </Button>
-            <Button
-              onClick={() => {
-                setSettings({ displayMode: 'source' });
-              }}
-              selected={settings.displayMode === 'source'}
-            >
-              Source
-            </Button>
-          </ButtonGroup>
-          <Button
-            icon
-            color="subtle"
-            selected={settings.showAdjust}
-            aria-label="Toggle Adjustment Panel"
-            onClick={() => {
-              setSettings(s => ({ showAdjust: !s.showAdjust }));
-            }}
-          >
-            <Tune />
-          </Button>
-          <Button
-            icon
-            color="subtle"
-            aria-label={settings.theme === 'dark' ? 'Dark Mode' : 'Light Mode'}
-            onClick={() => {
-              setSettings(s => ({ theme: s.theme === 'dark' ? 'light' : 'dark' }));
-            }}
-          >
-            <Show when={settings.theme === 'dark'} fallback={<LightMode />}>
-              <DarkMode />
-            </Show>
-          </Button>
-        </Page.Header>
+        <AppHeader selected={selected()} />
         <Switch>
           <Match when={settings.displayMode === 'canvas'}>
             <CanvasPane node={selected}></CanvasPane>
@@ -157,6 +102,6 @@ export const CodexPage: VoidComponent<{ fixtures: Resource<IFixture[]> }> = ({ f
   );
 };
 
-function compareNodes(left: IFixtureTreeNode, right: IFixtureTreeNode) {
+function compareNodes(left: ICatalogTreeNode, right: ICatalogTreeNode) {
   return left.title.localeCompare(right.title);
 }

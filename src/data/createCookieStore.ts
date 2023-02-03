@@ -11,7 +11,7 @@ export const createCookieStore = <T extends object>(cookieName: string, initialV
   // Initialize store from cookie (server or client).
   let cookie: string | null;
   if (isServer) {
-    const event = useContext(ServerContext);
+    const event = useContext(ServerContext)!;
     cookie = event.request.headers.get('Cookie');
   } else {
     cookie = document.cookie;

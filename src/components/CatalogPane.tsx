@@ -11,20 +11,20 @@ import {
 } from './styles.css';
 import {
   createExpansionStateStore,
-  IFixtureTree,
-  IFixtureTreeNode,
+  ICatalogTree,
+  ICatalogTreeNode,
   TreeExpansionContext,
 } from './tree';
 import { useNavigate, useParams } from '@solidjs/router';
 
 interface ItemProps {
-  node: IFixtureTreeNode;
+  node: ICatalogTreeNode;
 }
 
 const CatalogItem: VoidComponent<ItemProps> = props => {
   const params = useParams();
   const navigate = useNavigate();
-  const expansion = useContext(TreeExpansionContext);
+  const expansion = useContext(TreeExpansionContext)!;
 
   const expansionId = `${props.node.category.join('-')}`.toLowerCase().replace(' ', '-');
   const isExpanded = () =>
@@ -35,23 +35,22 @@ const CatalogItem: VoidComponent<ItemProps> = props => {
       <div
         classList={{
           [catalogEntryName]: true,
-          [selectableEntryName]: !!props.node.fixture,
-          selected: props.node.fixture && params.fixture === props.node.fixture.urlPath,
+          [selectableEntryName]: !!props.node.story,
+          selected: props.node.story && params.fixture === props.node.story.urlPath,
         }}
         onClick={e => {
           e.preventDefault();
           e.stopPropagation();
-          if (props.node.fixture) {
-            navigate(`/${props.node.fixture.urlPath}`);
+          if (props.node.story) {
+            navigate(`/story/${props.node.story.urlPath}`);
+          } else if (props.node.children) {
+            expansion.setExpanded(expansionId, !isExpanded());
           }
         }}
       >
         <div classList={{ [discloseAreaCss]: true, 'dm-scrollbars': true }}>
           <Show when={props.node.children} keyed>
-            <DiscloseButton
-              open={isExpanded()}
-              onClick={() => expansion.setExpanded(expansionId, !isExpanded())}
-            />
+            <DiscloseButton open={isExpanded()} />
           </Show>
         </div>
         {props.node.title}
@@ -64,7 +63,7 @@ const CatalogItem: VoidComponent<ItemProps> = props => {
 };
 
 interface GroupProps {
-  nodes: IFixtureTreeNode[];
+  nodes: ICatalogTreeNode[];
   root?: boolean;
   expanded?: boolean;
 }
@@ -84,14 +83,13 @@ const CatalogGroup: VoidComponent<GroupProps> = props => {
 };
 
 interface CatalogProps {
-  tree: IFixtureTree;
+  tree: ICatalogTree;
   root?: boolean;
 }
 
 export const CatalogPane: VoidComponent<CatalogProps> = props => {
   const expansion = createExpansionStateStore('catalog-view');
   const [mounted, setMounted] = createSignal(false);
-
   onMount(() => setMounted(true));
 
   return (

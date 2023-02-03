@@ -4,7 +4,7 @@ import { isServer } from 'solid-js/web';
 
 export function createLocalStorageStore<T extends Record<string, unknown>>(
   storeName: string,
-  initialValue?: T
+  initialValue: T
 ) {
   if (!isServer) {
     const json = localStorage.getItem(storeName);

@@ -1,19 +1,19 @@
 import { Component, createContext } from 'solid-js';
 import { createLocalStorageStore } from '../data/createLocalStorageStore';
+import { IStory } from '../data/stories';
 // import { createLocalStorageStore } from '../data/createLocalStorageStore';
-import type { IFixture } from '../data/fixtures';
 
-export interface IFixtureTreeNode {
+export interface ICatalogTreeNode {
   title: string;
-  fixture?: IFixture;
-  children?: IFixtureTreeNode[];
+  story?: IStory;
+  children?: ICatalogTreeNode[];
   component?: Component;
   category: string[];
 }
 
-export interface IFixtureTree {
-  children?: IFixtureTreeNode[];
-  byId: Record<string, IFixtureTreeNode>;
+export interface ICatalogTree {
+  children?: ICatalogTreeNode[];
+  byId: Record<string, ICatalogTreeNode>;
 }
 
 export interface ITreeExpansionState {

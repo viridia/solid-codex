@@ -1,7 +1,7 @@
 import { Accessor, createResource, Suspense } from 'solid-js';
 import { Show, VoidComponent } from 'solid-js';
 import { sourcePaneStyle } from './styles.css';
-import type { IFixtureTreeNode } from './tree';
+import type { ICatalogTreeNode } from './tree';
 import { CodeBlock } from 'dolmen';
 import { isServer } from 'solid-js/web';
 import type { IFixture } from '../data/fixtures';
@@ -39,11 +39,11 @@ function SourceDisplay(props: { fixture: IFixture }) {
 }
 
 export const SourcePane: VoidComponent<{
-  node: Accessor<IFixtureTreeNode | undefined>;
+  node: Accessor<ICatalogTreeNode | undefined>;
 }> = props => {
   return (
     <div class={sourcePaneStyle}>
-      <Show when={props.node()?.fixture} keyed>
+      <Show when={props.node()?.story} keyed>
         {fix => <SourceDisplay fixture={fix} />}
       </Show>
     </div>

@@ -1,17 +1,27 @@
 // @refresh reload
-import { Suspense } from 'solid-js';
-import { ErrorBoundary } from 'solid-start/error-boundary';
-import { Body, FileRoutes, Head, Html, Meta, Routes, Scripts, Title } from 'solid-start';
 import styles from 'dolmen/css/styles.css?raw';
-import lightTheme from 'dolmen/css/theme/light.css?raw';
 import darkTheme from 'dolmen/css/theme/dark.css?raw';
-import { rootCss } from './styles.css';
+import lightTheme from 'dolmen/css/theme/light.css?raw';
+import { Suspense } from 'solid-js';
+import { Body, Head, Html, Meta, Scripts, Title, useRouteData } from 'solid-start';
+import { ErrorBoundary } from 'solid-start/error-boundary';
+import { createServerData$ } from 'solid-start/server';
 import { CodexContext, createCodex } from '../api';
+import { CodexPage } from '../components/CodexPage';
+import { rootCss } from '../components/styles.css';
+import { storyIndex } from '../data/stories';
 import { createUserSettings, UserSettingsContext } from '../settings';
 
-export function App() {
+export function routeData() {
+  return createServerData$(() => {
+    return storyIndex();
+  });
+}
+
+export default function StoryPage() {
   const userSettings = createUserSettings();
   const fixtureParams = createCodex();
+  const stories = useRouteData<typeof routeData>();
 
   return (
     <UserSettingsContext.Provider value={userSettings}>
@@ -32,9 +42,7 @@ export function App() {
           >
             <ErrorBoundary>
               <Suspense>
-                <Routes>
-                  <FileRoutes />
-                </Routes>
+                <CodexPage stories={stories()} />
               </Suspense>
             </ErrorBoundary>
             <Scripts />

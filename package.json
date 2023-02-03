@@ -3,9 +3,16 @@
   "scripts": {
     "dev": "solid-start dev",
     "build": "solid-start build",
+    "build:cli": "tsc --project tsconfig.cli.json",
     "format": "prettier --write src",
     "lint": "eslint -c .eslintrc.json \"src/**/*.ts?(x)\"",
-    "start": "solid-start start"
+    "start": "node dist/cli/index.mjs"
+  },
+  "bin": {
+    "codex": "./dist/cli/index.mjs"
+  },
+  "exports": {
+    ".": {}
   },
   "type": "module",
   "devDependencies": {
@@ -30,6 +37,7 @@
     "@solidjs/router": "^0.7.0",
     "@vanilla-extract/css": "^1.9.3",
     "dolmen": "^0.3.0",
+    "globby": "^13.1.3",
     "solid-js": "^1.6.9",
     "solid-start": "^0.2.15",
     "undici": "^5.15.1"
