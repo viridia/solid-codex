@@ -14,7 +14,7 @@ const ParamsEditorClient = unstable_clientOnly(() => import('./ParamsEditor'));
 
 export const AdjustPane: VoidComponent = () => {
   const [settings] = useUserSettings();
-  const codex = useCodex();
+  // const codex = useCodex();
   const [isClient, setIsClient] = createSignal(false);
 
   // onMount(() => {
@@ -38,7 +38,7 @@ export const AdjustPane: VoidComponent = () => {
         <Drawer.Header>
           <Header>Adjust Parameters</Header>
         </Drawer.Header>
-        <Drawer.Content class={adjustPaneParamsSection}>
+        {/* <Drawer.Content class={adjustPaneParamsSection}>
           <ParamsEditorClient />
         </Drawer.Content>
         <Drawer.Content class={adjustPaneLogSection}>
@@ -46,7 +46,7 @@ export const AdjustPane: VoidComponent = () => {
           <ScrollArea class={adjustPaneEventLog}>
             <CodeBlock size="xs">{codex.logs().join('\n')}</CodeBlock>
           </ScrollArea>
-        </Drawer.Content>
+        </Drawer.Content> */}
       </Show>
     </Drawer>
   );

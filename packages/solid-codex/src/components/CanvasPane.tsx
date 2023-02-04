@@ -1,16 +1,16 @@
 import { createResource, createSignal, onMount, Show } from 'solid-js';
 import { VoidComponent } from 'solid-js';
 import { Dynamic } from 'solid-js/web';
-import { useCodex } from '../api-old';
+// import { useCodex } from '../api-old';
 
-const ResetCodex = () => {
-  const codex = useCodex();
+// const ResetCodex = () => {
+//   const codex = useCodex();
 
-  codex.clearParams();
-  codex.clearLogs();
+//   codex.clearParams();
+//   codex.clearLogs();
 
-  return null;
-};
+//   return null;
+// };
 
 export const MountedCanvasPane: VoidComponent<{
   filePath: string;

@@ -42,10 +42,10 @@ const ParamControl: VoidComponent<{ param: ParamAccessor<unknown> }> = props => 
 };
 
 const ParamsEditor: VoidComponent = () => {
-  const fixtureParams = useCodex();
+  const storyParams = useCodex();
   return (
     <For
-      each={fixtureParams.listParams()}
+      each={storyParams.listParams()}
       fallback={
         <Text dim em>
           No Parameters

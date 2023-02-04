@@ -1,5 +1,5 @@
-import { Aside, DiscloseButton } from 'dolmen';
-import { createSignal, For, onMount, Show, useContext } from 'solid-js';
+import { Aside, DiscloseButton, EmptyResult } from 'dolmen';
+import { createSignal, For, Match, onMount, Show, Switch, useContext } from 'solid-js';
 import { VoidComponent } from 'solid-js';
 import {
   catalogEntryStyle,
@@ -18,7 +18,7 @@ interface ItemProps {
 }
 
 const CatalogItem: VoidComponent<ItemProps> = props => {
-  const params = useParams();
+  const params = useParams<{ id: string }>();
   const navigate = useNavigate();
   const expansion = useContext(ExpansionContext)!;
 
@@ -32,7 +32,7 @@ const CatalogItem: VoidComponent<ItemProps> = props => {
         classList={{
           [catalogEntryName]: true,
           [selectableEntryName]: !!props.node.story,
-          selected: props.node.story && params.fixture === props.node.story.urlPath,
+          selected: props.node.story && params.id === props.node.story.urlPath,
         }}
         onClick={e => {
           e.preventDefault();
@@ -90,11 +90,16 @@ export const CatalogPane: VoidComponent<CatalogProps> = props => {
 
   return (
     <Aside classList={{ 'dm-theme-dark': true, [catalogPaneCss]: true }}>
-      <Show when={mounted()}>
-        <ExpansionContext.Provider value={expansion}>
-          <CatalogGroup root nodes={props.tree.children ?? []} />
-        </ExpansionContext.Provider>
-      </Show>
+      <Switch>
+        <Match when={props.tree.children?.length === 0}>
+          <EmptyResult>No stories found</EmptyResult>
+        </Match>
+        <Match when={mounted()}>
+          <ExpansionContext.Provider value={expansion}>
+            <CatalogGroup root nodes={props.tree.children ?? []} />
+          </ExpansionContext.Provider>
+        </Match>
+      </Switch>
     </Aside>
   );
 };

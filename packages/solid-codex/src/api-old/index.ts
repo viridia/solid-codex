@@ -48,7 +48,7 @@ export type ParamAccessors<T extends { [key: string]: AnyParam }> = {
   [key in keyof T]: ParamAccessor<ParamType<T[key]>>;
 };
 
-/** Context for defining fixture parameters. */
+/** Context for defining adjustment parameters. */
 export interface ICodex {
   /** Remove all parameter definitions from the store. */
   clearParams(): void;

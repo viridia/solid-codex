@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'solid-js';
 
-/** Context for defining fixture parameters. */
+/** Context for defining adjustment parameters. */
 export interface ICodex {
   // /** Remove all parameter definitions from the store. */
   // clearParams(): void;
@@ -38,7 +38,7 @@ export const CodexContext = createContext<ICodex>();
 export const useCodex = () => {
   const context = useContext(CodexContext);
   if (!context) {
-    throw new Error('Missing Fixture Params Context');
+    throw new Error('Missing Codex Context');
   }
   return context;
 };

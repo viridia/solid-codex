@@ -1,18 +1,18 @@
 import { Accessor, createResource, Suspense } from 'solid-js';
 import { Show, VoidComponent } from 'solid-js';
 import { sourcePaneStyle } from './styles.css';
-import type { ICatalogTreeNode } from '../data/expansion';
 import { CodeBlock } from 'dolmen';
 import { isServer } from 'solid-js/web';
-import type { IFixture } from '../data/fixtures';
+import { IStory } from '../data/stories';
+import { ICatalogTreeNode } from '../data/catalogTree';
 
 const srcPrologue = 'export default "';
 const srcEpilogue = '";\n//# sourceMappingURL';
 
-function SourceDisplay(props: { fixture: IFixture }) {
+function SourceDisplay(props: { fixture: IStory }) {
   const [source] = createResource(props.fixture, async fixture => {
-    const { path } = fixture;
-    const resp = await fetch(`${path}?raw`);
+    const { filePath } = fixture;
+    const resp = await fetch(`${filePath}?raw`);
     const text = await resp.text();
     let startIndex = 0;
     if (text.startsWith(srcPrologue)) {

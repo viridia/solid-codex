@@ -11,7 +11,7 @@
     "types": ["solid-start/env"],
     "baseUrl": "./",
     "paths": {
-      "~/*": ["./src/*"]
+      "~/*": ["packages/solid-codex/src/*"]
     }
   }
 }
