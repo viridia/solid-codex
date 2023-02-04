@@ -9,7 +9,7 @@ interface ICodexStateResult {
   state: ICodexState
 }
 
-export const createPluginRegistry = (): ICodexStateResult => {
+export const createAddonRegistry = (): ICodexStateResult => {
   const [element, setElement] = createSignal<HTMLIFrameElement>();
 
   createEffect(() => {

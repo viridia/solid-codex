@@ -1,58 +1,79 @@
 import { Text, CheckBox, Slider, Group } from 'dolmen';
-import { For, Match, Switch, VoidComponent } from 'solid-js';
-import { IParamInteger, ParamAccessor, useCodex } from '../api-old';
+import { For, Match, Switch, useContext, VoidComponent } from 'solid-js';
+import {
+  ParamDefnMap,
+  ParamDefn,
+  IBooleanParam,
+  INumberParam,
+  ParamsContext,
+} from '../data/params';
 import { paramGroupCss, paramSliderCss, paramSliderValue } from './styles.css';
 
-const ParamControl: VoidComponent<{ param: ParamAccessor<unknown> }> = props => {
+const BooleanParamControl: VoidComponent<{ name: string; param: IBooleanParam }> = props => {
+  const params = useContext(ParamsContext)!;
+  return (
+    <div class={paramGroupCss}>
+      <CheckBox
+        checked={params.values[props.name] as boolean}
+        onChange={e => {
+          params.setValues(props.name, e.currentTarget.checked);
+        }}
+      >
+        {props.param.caption ?? props.name}
+      </CheckBox>
+    </div>
+  );
+};
+
+const NumberParamControl: VoidComponent<{ name: string; param: INumberParam }> = props => {
+  const params = useContext(ParamsContext)!;
+  return (
+    <div class={paramGroupCss}>
+      <div>{props.param.caption ?? props.name}</div>
+      <Group gap="xl">
+        <Slider
+          class={paramSliderCss}
+          value={params.values[props.name] as number}
+          min={props.param.min ?? 0}
+          max={props.param.max ?? 100}
+          step={1}
+          valueLabelDisplay="auto"
+          onChange={newValue => {
+            params.setValues(props.name, newValue);
+          }}
+        />
+        <div class={paramSliderValue}>{params.values[props.name] as number}</div>
+      </Group>
+    </div>
+  );
+};
+
+const ParamControl: VoidComponent<{ name: string; param: ParamDefn }> = props => {
   return (
     <Switch>
-      <Match when={props.param.descriptor.type === 'boolean'}>
-        <div class={paramGroupCss}>
-          <CheckBox
-            checked={props.param() as boolean}
-            onChange={e => {
-              props.param(e.currentTarget.checked);
-            }}
-          >
-            {props.param.descriptor.caption}
-          </CheckBox>
-        </div>
+      <Match when={props.param.kind === 'boolean'}>
+        <BooleanParamControl name={props.name} param={props.param as IBooleanParam} />
       </Match>
-      <Match when={props.param.descriptor.type === 'integer'}>
-        <div class={paramGroupCss}>
-          <div>{props.param.descriptor.caption}</div>
-          <Group gap="xl">
-            <Slider
-              class={paramSliderCss}
-              value={props.param() as number}
-              min={(props.param.descriptor as IParamInteger).minVal ?? 0}
-              max={(props.param.descriptor as IParamInteger).maxVal ?? 100}
-              step={1}
-              valueLabelDisplay="auto"
-              onChange={e => {
-                props.param(e);
-              }}
-            />
-            <div class={paramSliderValue}>{props.param() as number}</div>
-          </Group>
-        </div>
+      <Match when={props.param.kind === 'number'}>
+        <NumberParamControl name={props.name} param={props.param as INumberParam} />
       </Match>
     </Switch>
   );
 };
 
-const ParamsEditor: VoidComponent = () => {
-  const storyParams = useCodex();
+const ParamsEditor: VoidComponent<{
+  params: ParamDefnMap;
+}> = props => {
   return (
     <For
-      each={storyParams.listParams()}
+      each={Object.entries(props.params)}
       fallback={
         <Text dim em>
           No Parameters
         </Text>
       }
     >
-      {p => <ParamControl param={p} />}
+      {([name, defn]) => <ParamControl name={name} param={defn} />}
     </For>
   );
 };

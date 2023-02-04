@@ -1,7 +1,7 @@
 import { Drawer, Header, ScrollArea, CodeBlock } from 'dolmen';
 import { createEffect, createSignal, Show, VoidComponent } from 'solid-js';
 import { unstable_clientOnly } from 'solid-start';
-import { useCodex } from '../api-old';
+import { IStory } from '../data/stories';
 import { useUserSettings } from '../settings';
 import {
   adjustPaneStyle,
@@ -12,16 +12,11 @@ import {
 
 const ParamsEditorClient = unstable_clientOnly(() => import('./ParamsEditor'));
 
-export const AdjustPane: VoidComponent = () => {
+export const AdjustPane: VoidComponent<{
+  story: IStory | undefined;
+}> = props => {
   const [settings] = useUserSettings();
-  // const codex = useCodex();
   const [isClient, setIsClient] = createSignal(false);
-
-  // onMount(() => {
-  //   setTimeout(() => {
-  //     setIsClient(true);
-  //   }, 10);
-  // });
 
   createEffect(() => {
     setIsClient(true);
@@ -38,15 +33,19 @@ export const AdjustPane: VoidComponent = () => {
         <Drawer.Header>
           <Header>Adjust Parameters</Header>
         </Drawer.Header>
-        {/* <Drawer.Content class={adjustPaneParamsSection}>
-          <ParamsEditorClient />
+        <Drawer.Content class={adjustPaneParamsSection}>
+          <Show when={props.story?.params} keyed>
+            {params => <ParamsEditorClient params={params}
+
+            />}
+          </Show>
         </Drawer.Content>
         <Drawer.Content class={adjustPaneLogSection}>
           <Header>Event Log</Header>
           <ScrollArea class={adjustPaneEventLog}>
-            <CodeBlock size="xs">{codex.logs().join('\n')}</CodeBlock>
+            {/* <CodeBlock size="xs">{codex.logs().join('\n')}</CodeBlock> */}
           </ScrollArea>
-        </Drawer.Content> */}
+        </Drawer.Content>
       </Show>
     </Drawer>
   );

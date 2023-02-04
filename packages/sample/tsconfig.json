@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "jsxImportSource": "solid-js",
+    "jsx": "preserve",
+    "strict": true,
+    "types": ["solid-codex/stories"],
+    "baseUrl": "./"
+  },
+  "include": [
+    "src/*.tsx"
+  ]
+}

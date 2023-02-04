@@ -1,6 +1,7 @@
 import { globby } from 'globby';
 import path from 'path';
 import { JSX } from 'solid-js';
+import { ParamDefnMap } from './params';
 
 declare global {
   const __STORY_PATTERNS__: string[];
@@ -22,6 +23,9 @@ export interface IStory {
   /** Hierarchical category shown in tree view. */
   category: string[];
 
+  /** Story parameters. */
+  params?: ParamDefnMap;
+
   // TODO: Checksum
 }
 
@@ -29,19 +33,22 @@ export interface IStoryConfig {
   category?: string;
 }
 
-type StoryModule = { default: IStoryConfig } & Record<string, () => unknown>;
-type StoryFunction = (() => JSX.Element) & { storyName?: string };
+export interface IStoryAttrs<T> {
+  storyName?: string;
+  params?: { [k in keyof T]: unknown };
+}
+
+export type StoryFunction<T = object> = ((props: T) => JSX.Element) & IStoryAttrs<T>;
+export type StoryModule = { default: IStoryConfig } & Record<string, StoryFunction<unknown>>;
 
 // const [stories, setStories] = createStore<Record<string, string>>();
 
 export const storyIndex = async () => {
-  // console.log(__STORY_ROOTS__, __STORY_PATTERN__);
-  // console.log('patterns', patterns);
   const storyFiles = await globby(__STORY_PATTERNS__, {
     expandDirectories: true,
     ignore: ['**/node_modules/**'],
   });
-  // console.log('stories', storyFiles);
+
   const stories: IStory[] = [];
   for (const filePath of storyFiles) {
     const module = (await import(filePath /* @vite-ignore */)) as StoryModule;
@@ -54,7 +61,7 @@ export const storyIndex = async () => {
       }
     }
     for (const key in module) {
-      const entry = module[key] as StoryFunction;
+      const entry = module[key] as StoryFunction<unknown>;
       if (typeof key === 'string' && key !== 'default' && typeof entry === 'function') {
         let name = key;
         if (typeof entry.storyName === 'string') {
@@ -68,6 +75,7 @@ export const storyIndex = async () => {
           urlPath: getUniquePath([...category, name].join('-')),
           propertyKey: key,
           category,
+          params: entry.params,
         });
       }
     }
