@@ -1,8 +1,8 @@
 import { Breadcrumbs, BreadcrumbsItem, Button, ButtonGroup, Page, Spacer } from 'dolmen';
 import { For, Show, VoidComponent } from 'solid-js';
+import { ICatalogTreeNode } from '../data/catalogTree';
 import { DarkMode, LightMode, Tune } from '../icons';
 import { useUserSettings } from '../settings';
-import { ICatalogTreeNode } from './tree';
 
 export const AppHeader: VoidComponent<{ selected: ICatalogTreeNode | undefined }> = props => {
   const [settings, setSettings] = useUserSettings();

@@ -1,8 +1,7 @@
-import { Accessor } from 'solid-js';
-import { Show, VoidComponent } from 'solid-js';
-import { ICatalogTreeNode } from './tree';
-import { canvasPaneCss, iframeCss } from './styles.css';
-import { useCodex } from '../api';
+import { createResource, createSignal, onMount, Show } from 'solid-js';
+import { VoidComponent } from 'solid-js';
+import { Dynamic } from 'solid-js/web';
+import { useCodex } from '../api-old';
 
 const ResetCodex = () => {
   const codex = useCodex();
@@ -13,23 +12,27 @@ const ResetCodex = () => {
   return null;
 };
 
-export const CanvasPane: VoidComponent<{
-  node: Accessor<ICatalogTreeNode | undefined>;
+export const MountedCanvasPane: VoidComponent<{
+  filePath: string;
+  propertyKey: string;
 }> = props => {
+  const [component] = createResource(async () => {
+    return (await import(props.filePath /* @vite-ignore */))[props.propertyKey!];
+  });
+
+  return <Dynamic component={component()} />;
+};
+
+export const CanvasPane: VoidComponent<{
+  filePath: string;
+  propertyKey: string;
+}> = props => {
+  const [mounted, setMounted] = createSignal(false);
+  onMount(() => setMounted(true));
+
   return (
-    <div classList={{ [canvasPaneCss]: true, 'dm-scrollbars': true }}>
-      <Show when={props.node()?.story} keyed>
-        {story => (
-          <iframe
-            class={iframeCss}
-            src={`/_?${new URLSearchParams({
-              file: story.filePath,
-              name: story.propertyKey ?? '',
-            }).toString()}`}
-            height="100%"
-          ></iframe>
-        )}
-      </Show>
-    </div>
+    <Show when={mounted()}>
+      <MountedCanvasPane filePath={props.filePath} propertyKey={props.propertyKey} />
+    </Show>
   );
 };

@@ -1,21 +1,14 @@
 // @refresh reload
-import { createResource, Show, Suspense } from 'solid-js';
 import { ErrorBoundary } from 'solid-start/error-boundary';
 import { Body, Head, Html, Meta, Scripts, Title } from 'solid-start';
 import { useSearchParams } from '@solidjs/router';
 import { rootCss } from '../components/styles.css';
+import { CodexContext, createCodex } from '../api';
+import { CanvasPane } from '../components/CanvasPane';
 
 export default function IframeApp() {
+  const codex = createCodex();
   const [params] = useSearchParams<{ file: string; name: string }>();
-  const [component] = createResource(async () => {
-    if (params.file) {
-      const mod = await import(params.file);
-      if (mod) {
-        return mod[params.name];
-      }
-    }
-    return null;
-  });
 
   return (
     <Html lang="en" class={rootCss}>
@@ -26,11 +19,9 @@ export default function IframeApp() {
       </Head>
       <Body>
         <ErrorBoundary>
-          <Suspense>
-            <Show when={component()} keyed>
-              {C => <C />}
-            </Show>
-          </Suspense>
+          <CodexContext.Provider value={codex}>
+            <CanvasPane filePath={params.file} propertyKey={params.name} />
+          </CodexContext.Provider>
         </ErrorBoundary>
         <Scripts />
       </Body>

@@ -13,9 +13,3 @@ export default function Root() {
     </ErrorBoundary>
  );
 }
-
-
-    // <Routes>
-    //   <Route path="/_/*" component={() => <IframeApp />} />
-    //   <Route path="/:fixture?/*" component={() => <App />} />
-    // </Routes>

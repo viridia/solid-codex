@@ -1,7 +1,7 @@
 import { Drawer, Header, ScrollArea, CodeBlock } from 'dolmen';
 import { createEffect, createSignal, Show, VoidComponent } from 'solid-js';
 import { unstable_clientOnly } from 'solid-start';
-import { useCodex } from '../api';
+import { useCodex } from '../api-old';
 import { useUserSettings } from '../settings';
 import {
   adjustPaneStyle,

@@ -18,7 +18,7 @@ export interface IStory {
   urlPath: string;
 
   /** For modules containing multiple fixtures, the name of the property used to get it. */
-  propertyKey?: string;
+  propertyKey: string;
 
   /** Hierarchical category shown in tree view. */
   category: string[];
@@ -67,7 +67,7 @@ export const storyIndex = async () => {
         stories.push({
           name,
           filePath,
-          urlPath: getUniquePath(category.join('-')),
+          urlPath: getUniquePath([...category, name].join('-')),
           propertyKey: key,
           category,
         });

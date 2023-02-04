@@ -1,6 +1,6 @@
 import { Text, CheckBox, Slider, Group } from 'dolmen';
 import { For, Match, Switch, VoidComponent } from 'solid-js';
-import { IParamInteger, ParamAccessor, useCodex } from '../api';
+import { IParamInteger, ParamAccessor, useCodex } from '../api-old';
 import { paramGroupCss, paramSliderCss, paramSliderValue } from './styles.css';
 
 const ParamControl: VoidComponent<{ param: ParamAccessor<unknown> }> = props => {

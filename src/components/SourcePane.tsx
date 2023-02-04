@@ -1,7 +1,7 @@
 import { Accessor, createResource, Suspense } from 'solid-js';
 import { Show, VoidComponent } from 'solid-js';
 import { sourcePaneStyle } from './styles.css';
-import type { ICatalogTreeNode } from './tree';
+import type { ICatalogTreeNode } from '../data/expansion';
 import { CodeBlock } from 'dolmen';
 import { isServer } from 'solid-js/web';
 import type { IFixture } from '../data/fixtures';

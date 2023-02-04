@@ -6,7 +6,7 @@ import { Suspense } from 'solid-js';
 import { Body, Head, Html, Meta, Scripts, Title, useRouteData } from 'solid-start';
 import { ErrorBoundary } from 'solid-start/error-boundary';
 import { createServerData$ } from 'solid-start/server';
-import { CodexContext, createCodex } from '../api';
+import { CodexContext, createCodex } from '../api-old';
 import { CodexPage } from '../components/CodexPage';
 import { rootCss } from '../components/styles.css';
 import { storyIndex } from '../data/stories';

@@ -9,13 +9,9 @@ import {
   catalogPaneCss,
   discloseAreaCss,
 } from './styles.css';
-import {
-  createExpansionStateStore,
-  ICatalogTree,
-  ICatalogTreeNode,
-  TreeExpansionContext,
-} from './tree';
+import { createExpansionStateStore, ExpansionContext } from '../data/expansion';
 import { useNavigate, useParams } from '@solidjs/router';
+import { ICatalogTree, ICatalogTreeNode } from '../data/catalogTree';
 
 interface ItemProps {
   node: ICatalogTreeNode;
@@ -24,7 +20,7 @@ interface ItemProps {
 const CatalogItem: VoidComponent<ItemProps> = props => {
   const params = useParams();
   const navigate = useNavigate();
-  const expansion = useContext(TreeExpansionContext)!;
+  const expansion = useContext(ExpansionContext)!;
 
   const expansionId = `${props.node.category.join('-')}`.toLowerCase().replace(' ', '-');
   const isExpanded = () =>
@@ -95,9 +91,9 @@ export const CatalogPane: VoidComponent<CatalogProps> = props => {
   return (
     <Aside classList={{ 'dm-theme-dark': true, [catalogPaneCss]: true }}>
       <Show when={mounted()}>
-        <TreeExpansionContext.Provider value={expansion}>
+        <ExpansionContext.Provider value={expansion}>
           <CatalogGroup root nodes={props.tree.children ?? []} />
-        </TreeExpansionContext.Provider>
+        </ExpansionContext.Provider>
       </Show>
     </Aside>
   );
