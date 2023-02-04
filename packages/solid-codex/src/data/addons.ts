@@ -9,7 +9,7 @@ interface ICodexStateResult {
   state: ICodexState
 }
 
-export const createCodexState = (): ICodexStateResult => {
+export const createPluginRegistry = (): ICodexStateResult => {
   const [element, setElement] = createSignal<HTMLIFrameElement>();
 
   createEffect(() => {
@@ -31,10 +31,10 @@ export const createCodexState = (): ICodexStateResult => {
   };
 };
 
-export const CodexStateContext = createContext<ICodexState>();
+export const PluginContext = createContext<ICodexState>();
 
 export const useCodexState = () => {
-  const context = useContext(CodexStateContext);
+  const context = useContext(PluginContext);
   if (!context) {
     throw new Error('Missing Codex State Context');
   }

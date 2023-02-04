@@ -1,0 +1,10 @@
+{
+  "name": "solid-codex-sample",
+  "scripts": {
+    "start": "codex"
+  },
+  "private": true,
+  "devDependencies": {
+    "solid-codex": "*"
+  }
+}

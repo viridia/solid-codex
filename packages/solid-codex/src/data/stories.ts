@@ -3,8 +3,7 @@ import path from 'path';
 import { JSX } from 'solid-js';
 
 declare global {
-  const __STORY_ROOTS__: string[];
-  const __STORY_PATTERN__: string;
+  const __STORY_PATTERNS__: string[];
 }
 
 export interface IStory {
@@ -37,9 +36,8 @@ type StoryFunction = (() => JSX.Element) & { storyName?: string };
 
 export const storyIndex = async () => {
   // console.log(__STORY_ROOTS__, __STORY_PATTERN__);
-  const patterns = __STORY_ROOTS__.map(root => path.join(root, __STORY_PATTERN__));
   // console.log('patterns', patterns);
-  const storyFiles = await globby(patterns, {
+  const storyFiles = await globby(__STORY_PATTERNS__, {
     expandDirectories: true,
     ignore: ['**/node_modules/**'],
   });
