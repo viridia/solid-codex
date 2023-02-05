@@ -2,10 +2,14 @@ import { style } from '@vanilla-extract/css';
 
 export const iframeCss = style({
   margin: 0,
-  padding: 8,
   border: 'none',
   flex: 1,
   alignSelf: 'stretch',
+});
+
+export const iframeBodyCss = style({
+  padding: 8,
+  margin: 0,
 });
 
 export const canvasPaneCss = style({

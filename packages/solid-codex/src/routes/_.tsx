@@ -1,7 +1,7 @@
 // @refresh reload
 import { ErrorBoundary } from 'solid-start/error-boundary';
 import { Body, Head, Html, Meta, Scripts, Title } from 'solid-start';
-import { rootCss } from '../components/styles.css';
+import { iframeBodyCss, iframeCss } from '../components/styles.css';
 import { CodexContext, createCodex } from '../api';
 import { CanvasPane } from '../components/CanvasPane';
 import { batch, createEffect, createMemo, createSignal, onCleanup, Show } from 'solid-js';
@@ -49,7 +49,7 @@ export default function IframeApp() {
   });
 
   return (
-    <Html lang="en" class={rootCss}>
+    <Html lang="en" class={iframeCss}>
       <Head>
         <Meta charset="utf-8" />
         <Title>Codex</Title>
@@ -58,7 +58,7 @@ export default function IframeApp() {
           {comp => <Dynamic component={comp} />}
         </Show>
       </Head>
-      <Body>
+      <Body class={iframeBodyCss}>
         <ErrorBoundary>
           <CodexContext.Provider value={codex}>
             <Show when={story()} keyed>
