@@ -31,6 +31,8 @@ Within this directory, there are a few different files you can create and use:
    installed.
 * `.codex/components.tsx`, used to augment stories with additional context such as themes, global
   styles, solid-js context providers, and so on.
+* `.codex/vite.config.{js|mjs|ts}`, permits customization of the Vite build, adding additional
+  plugins, etc.
 
 ### `.codex/components.tsx`
 
