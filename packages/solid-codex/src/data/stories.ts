@@ -52,7 +52,7 @@ export const storyIndex = async () => {
 
   const stories: IStory[] = [];
   for (const filePath of storyFiles) {
-    const module = (await import(filePath /* @vite-ignore */)) as StoryModule;
+    const module = (await import(filePath/* @vite-ignore */)) as StoryModule;
     const categoryName = path.basename(filePath).split('.')[0];
     let category = [categoryName];
     if (typeof module.default === 'object') {

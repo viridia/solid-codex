@@ -1,7 +1,13 @@
 /** @file CLI entry point. */
 import { vanillaExtractPlugin } from '@vanilla-extract/vite-plugin';
 import solid from 'solid-start/vite';
-import { createServer, InlineConfig, searchForWorkspaceRoot } from 'vite';
+import {
+  createServer,
+  InlineConfig,
+  loadConfigFromFile,
+  mergeConfig,
+  searchForWorkspaceRoot,
+} from 'vite';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import fs from 'fs';
@@ -13,6 +19,7 @@ const wsRoot = searchForWorkspaceRoot(startDir);
 
 interface ICodexConfig {
   stories?: string | string[];
+  port?: number;
 }
 
 // Read configs and start the Vite server.
@@ -22,56 +29,8 @@ interface ICodexConfig {
     __COMPONENTS__: JSON.stringify(null),
   };
 
-  // TODO: Move this to a function.
-  // Search for .codex directory
-  for (let dir = startDir; dir; dir = path.dirname(dir)) {
-    const codexDir = path.resolve(dir, '.codex');
-    if (fs.existsSync(codexDir)) {
-      const st = fs.statSync(codexDir);
-      if (st.isDirectory()) {
-        defines.__CODEX_DIR__ = JSON.stringify(codexDir);
-        const configPath = path.resolve(codexDir, 'config.mjs');
-        if (fs.existsSync(configPath)) {
-          try {
-            // Process config.mjs file.
-            const configModule = await import(configPath);
-            const config = configModule?.default as ICodexConfig;
-            if (!config) {
-              console.error(`Config file config.mjs has no default export.`);
-            } else if (config.stories) {
-              if (typeof config.stories === 'string') {
-                defines.__STORY_PATTERNS__ = JSON.stringify([
-                  path.resolve(codexDir, '../', config.stories),
-                ]);
-              } else if (Array.isArray(config.stories)) {
-                defines.__STORY_PATTERNS__ = JSON.stringify(
-                  config.stories.map(pattern => path.join(codexDir, '../', pattern))
-                );
-              }
-            }
-          } catch (e) {
-            console.error(`Error reading config.mjs`);
-          }
-        }
-
-        // Process components.txt. No need to load here since it's only used in the iframe.
-        const componentsPath = path.resolve(codexDir, 'components.tsx');
-        if (fs.existsSync(componentsPath)) {
-          defines.__COMPONENTS__ = JSON.stringify(componentsPath);
-        }
-      } else {
-        console.error('.codex should be a directory.');
-      }
-    }
-    if (dir === wsRoot) {
-      break;
-    }
-  }
-
-  process.chdir(__dirname);
-
-  // TODO: Merge with config in .codex if it exists.
-  const config: InlineConfig = {
+  // Vite config for codex server.
+  let viteConfig: InlineConfig = {
     plugins: [vanillaExtractPlugin(), solid({})],
     configFile: false,
     root: __dirname,
@@ -84,8 +43,91 @@ interface ICodexConfig {
     define: defines,
   };
 
-  const server = await createServer(config);
+  // TODO: Move this to a function.
+  // Search for .codex directory
+  for (let dir = startDir; dir; dir = path.dirname(dir)) {
+    const codexDir = path.resolve(dir, '.codex');
+    if (fs.existsSync(codexDir)) {
+      const st = fs.statSync(codexDir);
+      if (!st.isDirectory()) {
+        console.error('.codex should be a directory.');
+        process.exit(-1);
+      }
+
+      defines.__CODEX_DIR__ = JSON.stringify(codexDir);
+      const configModule = await importIfExists<{ default: ICodexConfig }>(
+        path.resolve(codexDir, 'config.mjs')
+      );
+
+      if (configModule) {
+        // Process config.mjs file.
+        const config = configModule.default as ICodexConfig;
+        if (!config) {
+          console.error(`Config file config.mjs has no default export.`);
+          process.exit(-1);
+        }
+
+        if (config.stories) {
+          if (typeof config.stories === 'string') {
+            defines.__STORY_PATTERNS__ = JSON.stringify([
+              path.resolve(codexDir, '../', config.stories),
+            ]);
+          } else if (Array.isArray(config.stories)) {
+            defines.__STORY_PATTERNS__ = JSON.stringify(
+              config.stories.map(pattern => path.join(codexDir, '../', pattern))
+            );
+          }
+        }
+
+        if (typeof config.port === 'number') {
+          viteConfig.server!.port = config.port;
+        }
+      }
+
+      // Process components.txt. No need to load here since it's only used in the iframe.
+      const componentsPath = path.resolve(codexDir, 'components.tsx');
+      if (fs.existsSync(componentsPath)) {
+        defines.__COMPONENTS__ = JSON.stringify(componentsPath);
+      }
+
+      // Override user config.
+      const userConfig = await loadConfigFromFile(
+        {
+          command: 'serve',
+          mode: 'dev',
+        },
+        undefined,
+        codexDir
+      );
+      if (userConfig) {
+        // TODO: Remove props from user config that we can't handle - root, etc.
+        viteConfig = mergeConfig(viteConfig, userConfig.config, true);
+      }
+
+      break;
+    }
+
+    // Stop searching if we get to workspace root.
+    if (dir === wsRoot) {
+      break;
+    }
+  }
+
+  process.chdir(__dirname);
+  const server = await createServer(viteConfig);
   await server.listen();
 
   server.printUrls();
 })();
+
+async function importIfExists<T>(filePath: string): Promise<T | null> {
+  if (fs.existsSync(filePath)) {
+    try {
+      return (await import(filePath /* @vite-ignore */)) as T;
+    } catch (e) {
+      console.error(`Error importing ${filePath}`);
+      process.exit(-1);
+    }
+  }
+  return null;
+}
