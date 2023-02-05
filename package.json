@@ -30,5 +30,6 @@
     "singleQuote": true,
     "printWidth": 100,
     "arrowParens": "avoid"
-  }
+  },
+  "version": "0.1.0"
 }
