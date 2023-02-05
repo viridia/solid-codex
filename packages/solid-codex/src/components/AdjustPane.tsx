@@ -35,15 +35,13 @@ export const AdjustPane: VoidComponent<{
         </Drawer.Header>
         <Drawer.Content class={adjustPaneParamsSection}>
           <Show when={props.story?.params} keyed>
-            {params => <ParamsEditorClient params={params}
-
-            />}
+            {params => <ParamsEditorClient params={params} />}
           </Show>
         </Drawer.Content>
         <Drawer.Content class={adjustPaneLogSection}>
           <Header>Event Log</Header>
           <ScrollArea class={adjustPaneEventLog}>
-            {/* <CodeBlock size="xs">{codex.logs().join('\n')}</CodeBlock> */}
+            <CodeBlock size="xs">{/* {codex.logs().join('\n')} */}</CodeBlock>
           </ScrollArea>
         </Drawer.Content>
       </Show>

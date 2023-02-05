@@ -1,30 +1,62 @@
-# SolidStart
+# Codex
 
-Everything you need to build a Solid project, powered by [`solid-start`](https://start.solidjs.com);
+**Codex** provides an environment for developing and testing UI components that are implemented
+in Solid.js
 
-## Creating a project
+## Quick Start
 
-```bash
-# create a new project in the current directory
-npm init solid@latest
-
-# create a new project in my-app
-npm init solid@latest my-app
+```sh
+npm install --save-dev solid-codex
+npx codex
 ```
 
-## Developing
+## Writing stories
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+By default, Codex looks for files with the pattern `*.stories.tsx`. Story files should export
+a Solid component for each story:
 
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+```tsx
+export const ButtonStory = () => {
+  return <button>Hello, world!</button>;
+};
 ```
 
-## Building
+## Configuration
 
-Solid apps are built with _adapters_, which optimise your project for deployment to different environments.
+Codex will look for configuration files in the `.codex` directory of your project. This directory
+can be located in the current directory or any parent directory up to the project workspace root.
+Within this directory, there are a few different files you can create and use:
 
-By default, `npm run build` will generate a Node app that you can run with `npm start`. To use a different adapter, add it to the `devDependencies` in `package.json` and specify in your `vite.config.js`.
+* `.codex/config.mjs`, used to specify things such as story search patterns or which addons are
+   installed.
+
+(Not done yet:)
+
+* `.codex/root.tsx`, used to augment stories with additional context such as themes, global styles,
+  solid-js context providers, and so on.
+
+## TODO:
+
+* event log
+* root.tsx
+* string enums (and strings generally)
+* number precision
+* highlight.js
+* show story code
+* fix ssr
+
+## Addon structure
+
+* package-name: solid-codex-<plugin_name>
+* mentioned in config.mjs
+* import default symbol.
+
+structure:
+
+```tsx
+  import { action } 'solid-codex-eventlog/api'
+
+  interface ICodexAddon {
+    render(pluginContext): JSX.Element;
+  }
+```

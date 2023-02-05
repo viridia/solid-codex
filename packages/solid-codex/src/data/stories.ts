@@ -1,10 +1,11 @@
 import { globby } from 'globby';
 import path from 'path';
-import { JSX } from 'solid-js';
+import { JSX, ParentComponent } from 'solid-js';
 import { ParamDefnMap } from './params';
 
 declare global {
   const __STORY_PATTERNS__: string[];
+  const __COMPONENTS__: string;
 }
 
 export interface IStory {
@@ -40,6 +41,7 @@ export interface IStoryAttrs<T> {
 
 export type StoryFunction<T = object> = ((props: T) => JSX.Element) & IStoryAttrs<T>;
 export type StoryModule = { default: IStoryConfig } & Record<string, StoryFunction<unknown>>;
+export type StoryDecorator = ParentComponent;
 
 // const [stories, setStories] = createStore<Record<string, string>>();
 

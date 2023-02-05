@@ -1,42 +1,16 @@
-import { createContext, createEffect, createSignal, onCleanup, useContext } from 'solid-js';
+import type { JSX } from 'solid-js';
+import type { IStoryMsg } from './message';
 
-interface ICodexState {
-  store?: null;
+/** Interface exported by an addon. */
+export interface ICodexAddon {
+  /** Name of this addon. */
+  name: string;
+
+  /** Render an element to be displayed in the adjustment panel. */
+  render?(context: ICodexAddonContext): JSX.Element;
 }
 
-interface ICodexStateResult {
-  frameProps: { ref: (elt: HTMLIFrameElement) => void };
-  state: ICodexState
+export interface ICodexAddonContext {
+  /** Post a message to the iframe that contains the currently rendered story. */
+  postMessage(message: IStoryMsg): void;
 }
-
-export const createAddonRegistry = (): ICodexStateResult => {
-  const [element, setElement] = createSignal<HTMLIFrameElement>();
-
-  createEffect(() => {
-    const handler = (ev: MessageEvent) => {
-      console.log('message event:', ev);
-    };
-    window.addEventListener('message', handler);
-    onCleanup(() => window.removeEventListener('message', handler));
-  });
-
-  return {
-    frameProps: {
-      ref: setElement,
-    },
-
-    state: {
-
-    }
-  };
-};
-
-export const PluginContext = createContext<ICodexState>();
-
-export const useCodexState = () => {
-  const context = useContext(PluginContext);
-  if (!context) {
-    throw new Error('Missing Codex State Context');
-  }
-  return context;
-};

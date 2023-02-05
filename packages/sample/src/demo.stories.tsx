@@ -1,6 +1,5 @@
 import { StoryFunction } from 'solid-codex/stories';
 import { createSignal, onCleanup, VoidComponent } from 'solid-js';
-// import { useCodex } from '../src/api';
 
 const [count, setCount] = createSignal(0);
 

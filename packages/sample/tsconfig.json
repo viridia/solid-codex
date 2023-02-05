@@ -10,6 +10,7 @@
     "baseUrl": "./"
   },
   "include": [
-    "src/*.tsx"
+    "src/*.tsx",
+    ".codex/*.tsx"
   ]
 }

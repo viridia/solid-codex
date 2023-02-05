@@ -48,6 +48,7 @@ const NumberParamControl: VoidComponent<{ name: string; param: INumberParam }> =
   );
 };
 
+// TODO: strings and string enums.
 const ParamControl: VoidComponent<{ name: string; param: ParamDefn }> = props => {
   return (
     <Switch>

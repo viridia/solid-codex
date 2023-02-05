@@ -1,3 +1,4 @@
+/** @file CLI entry point. */
 import { vanillaExtractPlugin } from '@vanilla-extract/vite-plugin';
 import solid from 'solid-start/vite';
 import { createServer, searchForWorkspaceRoot } from 'vite';
@@ -14,11 +15,14 @@ interface ICodexConfig {
   stories?: string | string[];
 }
 
+// Read configs and start the Vite server.
 (async () => {
   const defines: Record<string, string> = {
     __STORY_PATTERNS__: JSON.stringify([path.join(defaultStoryRoot, '**/*.stories.tsx')]),
+    __COMPONENTS__: JSON.stringify(null),
   };
 
+  // TODO: Move this to a function.
   // Search for .codex directory
   for (let dir = startDir; dir; dir = path.dirname(dir)) {
     const codexDir = path.resolve(dir, '.codex');
@@ -49,7 +53,12 @@ interface ICodexConfig {
             console.error(`Error reading config.mjs`);
           }
         }
-        // const componentPath = path.resolve(codexDir, 'components.tsx');
+
+        // Process components.txt. No need to load here since it's only used in the iframe.
+        const componentsPath = path.resolve(codexDir, 'components.tsx');
+        if (fs.existsSync(componentsPath)) {
+          defines.__COMPONENTS__ = JSON.stringify(componentsPath);
+        }
       } else {
         console.error('.codex should be a directory.');
       }

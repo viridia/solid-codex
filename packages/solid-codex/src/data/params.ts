@@ -1,6 +1,7 @@
 import { createContext } from 'solid-js';
 import { SetStoreFunction } from 'solid-js/store';
 
+/** Base type for parameter definitions. */
 export interface IParam {
   caption?: string;
 }

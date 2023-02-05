@@ -1,4 +1,4 @@
-{
+  {
   "name": "solid-codex",
   "scripts": {
     "dev": "node dist/cli/index.mjs",
@@ -10,7 +10,9 @@
     "codex": "./bin/codex.mjs"
   },
   "exports": {
-    ".": {}
+    ".": {
+      "types": "./stories.d.ts"
+    }
   },
   "type": "module",
   "devDependencies": {
