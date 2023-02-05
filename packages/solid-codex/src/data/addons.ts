@@ -1,6 +1,8 @@
 import type { JSX } from 'solid-js';
 import type { IStoryMsg } from './message';
 
+// TODO: This is a sketch of the APIs, none of this is implemented.
+
 /** Interface exported by an addon. */
 export interface ICodexAddon {
   /** Name of this addon. */

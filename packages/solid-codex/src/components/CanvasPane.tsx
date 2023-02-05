@@ -11,7 +11,7 @@ export const DecoratedStory: ParentComponent<{
   propertyKey: string;
 }> = props => {
   const [componentModule] = createImportedModule(props.filePath);
-  const component = createMemo<StoryDecorator>(() => {
+  const component = createMemo<StoryDecorator | undefined>(() => {
     return componentModule()?.[props.propertyKey];
   });
 
@@ -24,13 +24,13 @@ export const RenderedStory: VoidComponent<{
   params: Store<ParamValues>;
 }> = props => {
   const [storyModule] = createImportedModule(props.filePath);
-  const component = createMemo<StoryFunction>(() => {
+  const component = createMemo<StoryFunction | undefined>(() => {
     return storyModule()?.[props.propertyKey];
   });
 
   if (__COMPONENTS__) {
     const [globalModule] = createImportedModule(__COMPONENTS__);
-    const decorator = createMemo<StoryDecorator>(() => {
+    const decorator = createMemo<StoryDecorator | undefined>(() => {
       return globalModule()?.Decorator;
     });
     return (

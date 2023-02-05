@@ -4,14 +4,23 @@ import { Body, Head, Html, Meta, Scripts, Title } from 'solid-start';
 import { rootCss } from '../components/styles.css';
 import { CodexContext, createCodex } from '../api';
 import { CanvasPane } from '../components/CanvasPane';
-import { batch, createEffect, createSignal, onCleanup, Show } from 'solid-js';
+import { batch, createEffect, createMemo, createSignal, onCleanup, Show } from 'solid-js';
 import { createStore, reconcile } from 'solid-js/store';
 import { StoryMessage } from '../data/message';
+import { createImportedModule } from '../data/module';
+import { StoryFunction } from '../data/stories';
+import { Dynamic } from 'solid-js/web';
 
 export default function IframeApp() {
   const codex = createCodex();
   const [story, setStory] = createSignal<{ filePath: string; propertyKey: string } | null>(null);
   const [params, setParams] = createStore<Record<string, unknown>>({});
+
+  const [configModule] = createImportedModule(__COMPONENTS__);
+  const headComponent = createMemo<StoryFunction | undefined>(() => {
+    return configModule()?.Head;
+  });
+
   createEffect(() => {
     const handler = (e: MessageEvent<StoryMessage>) => {
       const msg = e.data;
@@ -45,6 +54,9 @@ export default function IframeApp() {
         <Meta charset="utf-8" />
         <Title>Codex</Title>
         <Meta name="viewport" content="width=device-width, initial-scale=1" />
+        <Show when={headComponent()} keyed>
+          {comp => <Dynamic component={comp} />}
+        </Show>
       </Head>
       <Body>
         <ErrorBoundary>

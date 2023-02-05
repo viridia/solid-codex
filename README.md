@@ -29,34 +29,21 @@ Within this directory, there are a few different files you can create and use:
 
 * `.codex/config.mjs`, used to specify things such as story search patterns or which addons are
    installed.
+* `.codex/components.tsx`, used to augment stories with additional context such as themes, global
+  styles, solid-js context providers, and so on.
 
-(Not done yet:)
+### `.codex/components.tsx`
 
-* `.codex/root.tsx`, used to augment stories with additional context such as themes, global styles,
-  solid-js context providers, and so on.
+* **Global decorator**: An exported component named `Decorator` will be used to wrap every story.
+* **Head tags**: An exported component named `Head` will be inserted into the page head.
 
 ## TODO:
 
-* event log
-* root.tsx
+* event log / actions addon
+* fswatcher to see when story index needs to be refreshed.
 * string enums (and strings generally)
 * number precision
-* highlight.js
 * show story code
+* highlight.js
 * fix ssr
-
-## Addon structure
-
-* package-name: solid-codex-<plugin_name>
-* mentioned in config.mjs
-* import default symbol.
-
-structure:
-
-```tsx
-  import { action } 'solid-codex-eventlog/api'
-
-  interface ICodexAddon {
-    render(pluginContext): JSX.Element;
-  }
-```
+* addons

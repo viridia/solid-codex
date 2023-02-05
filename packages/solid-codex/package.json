@@ -16,6 +16,13 @@
     }
   },
   "type": "module",
+  "files": [
+    "bin",
+    "dist",
+    "src",
+    "public",
+    "stories.d.ts"
+  ],
   "devDependencies": {
     "@vanilla-extract/vite-plugin": "^3.7.1",
     "esbuild": "^0.14.54",

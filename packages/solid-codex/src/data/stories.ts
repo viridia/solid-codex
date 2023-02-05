@@ -5,7 +5,8 @@ import { ParamDefnMap } from './params';
 
 declare global {
   const __STORY_PATTERNS__: string[];
-  const __COMPONENTS__: string;
+  const __CODEX_DIR__: string;
+  const __COMPONENTS__: string | null;
 }
 
 export interface IStory {
@@ -26,8 +27,6 @@ export interface IStory {
 
   /** Story parameters. */
   params?: ParamDefnMap;
-
-  // TODO: Checksum
 }
 
 export interface IStoryConfig {

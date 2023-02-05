@@ -7,7 +7,7 @@ import path from 'path';
 import fs from 'fs';
 const __dirname = fileURLToPath(new URL('../..', import.meta.url));
 const startDir = process.cwd();
-const defaultStoryRoot = path.dirname(process.cwd());
+const defaultStoryRoot = path.dirname(startDir);
 const wsRoot = searchForWorkspaceRoot(startDir);
 // Read configs and start the Vite server.
 (async () => {
@@ -52,6 +52,11 @@ const wsRoot = searchForWorkspaceRoot(startDir);
                 if (fs.existsSync(componentsPath)) {
                     defines.__COMPONENTS__ = JSON.stringify(componentsPath);
                 }
+                // Process components.txt. No need to load here since it's only used in the iframe.
+                const headPath = path.resolve(codexDir, 'head.html');
+                if (fs.existsSync(headPath)) {
+                    defines.__HEAD_HTML__ = JSON.stringify(headPath);
+                }
             }
             else {
                 console.error('.codex should be a directory.');
@@ -62,18 +67,20 @@ const wsRoot = searchForWorkspaceRoot(startDir);
         }
     }
     process.chdir(__dirname);
-    const server = await createServer({
+    // TODO: Merge with config in .codex if it exists.
+    const config = {
         plugins: [vanillaExtractPlugin(), solid({})],
         configFile: false,
         root: __dirname,
         server: {
             port: 50005,
             fs: {
-                allow: [wsRoot],
+                allow: [wsRoot, __dirname],
             },
         },
         define: defines,
-    });
+    };
+    const server = await createServer(config);
     await server.listen();
     server.printUrls();
 })();

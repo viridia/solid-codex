@@ -1,14 +1,14 @@
 /** @file CLI entry point. */
 import { vanillaExtractPlugin } from '@vanilla-extract/vite-plugin';
 import solid from 'solid-start/vite';
-import { createServer, searchForWorkspaceRoot } from 'vite';
+import { createServer, InlineConfig, searchForWorkspaceRoot } from 'vite';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import fs from 'fs';
 
 const __dirname = fileURLToPath(new URL('../..', import.meta.url));
 const startDir = process.cwd();
-const defaultStoryRoot = path.dirname(process.cwd());
+const defaultStoryRoot = path.dirname(startDir);
 const wsRoot = searchForWorkspaceRoot(startDir);
 
 interface ICodexConfig {
@@ -70,18 +70,21 @@ interface ICodexConfig {
 
   process.chdir(__dirname);
 
-  const server = await createServer({
+  // TODO: Merge with config in .codex if it exists.
+  const config: InlineConfig = {
     plugins: [vanillaExtractPlugin(), solid({})],
     configFile: false,
     root: __dirname,
     server: {
       port: 50005,
       fs: {
-        allow: [wsRoot],
+        allow: [wsRoot, __dirname],
       },
     },
     define: defines,
-  });
+  };
+
+  const server = await createServer(config);
   await server.listen();
 
   server.printUrls();
