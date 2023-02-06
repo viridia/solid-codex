@@ -89,7 +89,7 @@ export const CatalogPane: VoidComponent<CatalogProps> = props => {
   onMount(() => setMounted(true));
 
   return (
-    <Aside classList={{ 'dm-theme-dark': true, [catalogPaneCss]: true }}>
+    <Aside classList={{ [catalogPaneCss]: true }}>
       <Switch>
         <Match when={props.tree.children?.length === 0}>
           <EmptyResult>No stories found</EmptyResult>

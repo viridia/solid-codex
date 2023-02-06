@@ -8,7 +8,7 @@ export const iframeCss = style({
 });
 
 export const iframeBodyCss = style({
-  padding: 8,
+  padding: 16,
   margin: 0,
 });
 
@@ -16,7 +16,6 @@ export const canvasPaneCss = style({
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'start',
-  // padding: 8,
   flex: 1,
   overflowY: 'auto',
   overflowX: 'hidden',
@@ -80,7 +79,7 @@ export const catalogGroup = style({
 export const catalogPaneCss = style({
   boxShadow: '0 0 3px 0 black',
   alignItems: 'stretch !important',
-  color: '#fff',
+  color: 'var(--dm-color-text-dim)',
   overflowY: 'auto',
   width: 300,
   zIndex: 800,
@@ -101,23 +100,22 @@ export const catalogEntryName = style({
   alignItems: 'center',
   justifyContent: 'start',
   padding: '4px 8px',
-  // color: palette.coolgray400,
   fontStyle: 'italic',
+  cursor: 'pointer',
 });
 
 export const selectableEntryName = style({
-  // color: palette.gray100,
-  cursor: 'pointer',
+  color: 'var(--dm-color-text)',
   fontStyle: 'normal',
 
   ':hover': {
-    // backgroundColor: palette.coolgray850,
+    backgroundColor: 'var(--dm-color-item-hover-bg)',
   },
 
   selectors: {
     '&.selected': {
       fontWeight: 'bold',
-      backgroundColor: 'rgba(255, 255, 255, 0.1)', // TODO: Replace with selected bg
+      // backgroundColor: 'var(--dm-color-item-focus-bg)',
     },
   },
 });

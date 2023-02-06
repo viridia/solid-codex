@@ -45,7 +45,8 @@ Within this directory, there are a few different files you can create and use:
 * fswatcher to see when story index needs to be refreshed.
 * string enums (and strings generally)
 * number precision
-* show story code
+* show story code (crash)
+* Fix appearance of catalog (theme, cursor)
 * highlight.js
 * fix ssr
 * addons
