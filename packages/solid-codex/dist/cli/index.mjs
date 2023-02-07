@@ -5,6 +5,7 @@ import { createServer, loadConfigFromFile, mergeConfig, searchForWorkspaceRoot, 
 import { fileURLToPath } from 'url';
 import path from 'path';
 import fs from 'fs';
+import process from 'process';
 const __dirname = fileURLToPath(new URL('../..', import.meta.url));
 const startDir = process.cwd();
 const defaultStoryRoot = path.dirname(startDir);
@@ -17,7 +18,12 @@ const wsRoot = searchForWorkspaceRoot(startDir);
     };
     // Vite config for codex server.
     let viteConfig = {
-        plugins: [vanillaExtractPlugin(), solid({})],
+        plugins: [
+            vanillaExtractPlugin(),
+            solid({
+                routesDir: path.resolve(__dirname, 'src/routes'),
+            }),
+        ],
         configFile: false,
         root: __dirname,
         server: {
@@ -82,7 +88,7 @@ const wsRoot = searchForWorkspaceRoot(startDir);
             break;
         }
     }
-    process.chdir(__dirname);
+    // process.chdir(__dirname);
     const server = await createServer(viteConfig);
     await server.listen();
     server.printUrls();

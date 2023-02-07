@@ -15,7 +15,7 @@ export const iframeBodyCss = style({
 export const canvasPaneCss = style({
   display: 'flex',
   flexDirection: 'column',
-  justifyContent: 'start',
+  justifyContent: 'flex-start',
   flex: 1,
   overflowY: 'auto',
   overflowX: 'hidden',
@@ -29,7 +29,7 @@ export const canvasSectionStyle = style({
 export const sourcePaneStyle = style({
   display: 'flex',
   flexDirection: 'column',
-  justifyContent: 'start',
+  justifyContent: 'flex-start',
   padding: 8,
   flex: 1,
   overflowY: 'auto',
@@ -98,7 +98,7 @@ export const catalogEntryStyle = style({
 export const catalogEntryName = style({
   display: 'flex',
   alignItems: 'center',
-  justifyContent: 'start',
+  justifyContent: 'flex-start',
   padding: '4px 8px',
   fontStyle: 'italic',
   cursor: 'pointer',

@@ -11,6 +11,7 @@ import {
 import { fileURLToPath } from 'url';
 import path from 'path';
 import fs from 'fs';
+import process from 'process';
 
 const __dirname = fileURLToPath(new URL('../..', import.meta.url));
 const startDir = process.cwd();
@@ -31,7 +32,12 @@ interface ICodexConfig {
 
   // Vite config for codex server.
   let viteConfig: InlineConfig = {
-    plugins: [vanillaExtractPlugin(), solid({})],
+    plugins: [
+      vanillaExtractPlugin(),
+      solid({
+        routesDir: path.resolve(__dirname, 'src/routes'),
+      }),
+    ],
     configFile: false,
     root: __dirname,
     server: {
@@ -113,7 +119,7 @@ interface ICodexConfig {
     }
   }
 
-  process.chdir(__dirname);
+  // process.chdir(__dirname);
   const server = await createServer(viteConfig);
   await server.listen();
 

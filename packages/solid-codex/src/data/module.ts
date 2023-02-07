@@ -7,6 +7,11 @@ export const createImportedModule = (filePath: string | null) => {
     if (!filePath) {
       return null;
     }
-    return await import(filePath /* @vite-ignore */);
+    try {
+      return await import(filePath /* @vite-ignore */);
+    } catch (e) {
+      console.error('Failed to load module:', filePath);
+      return null;
+    }
   });
 };

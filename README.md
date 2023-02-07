@@ -72,10 +72,9 @@ Within this directory, there are a few different files you can create and use:
 
 ## TODO:
 
-* event log / actions addon
 * fswatcher to see when story index needs to be refreshed.
 * string enums (and strings generally)
-* number precision
 * highlight.js
 * fix ssr (currently disabled)
 * addons
+  * event log / actions addon

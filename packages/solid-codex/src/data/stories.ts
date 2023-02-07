@@ -50,33 +50,40 @@ export const storyIndex = async () => {
 
   const stories: IStory[] = [];
   for (const filePath of storyFiles) {
-    const module = (await import(filePath/* @vite-ignore */)) as StoryModule;
-    const categoryName = path.basename(filePath).split('.')[0];
-    let category = [categoryName];
-    if (typeof module.default === 'object') {
-      const categoryString = module.default.category;
-      if (typeof categoryString === 'string' && categoryString.length > 0) {
-        category = categoryString.split(/\s*\/\s*/);
+    try {
+      const mod = (await import(filePath /* @vite-ignore */)) as StoryModule;
+      if (!mod) {
+        continue;
       }
-    }
-    for (const key in module) {
-      const entry = module[key] as StoryComponent<unknown>;
-      if (typeof key === 'string' && key !== 'default' && typeof entry === 'function') {
-        let name = key;
-        if (typeof entry.storyName === 'string') {
-          name = entry.storyName;
-        } else if (name.endsWith('Story')) {
-          name = name.slice(0, -5);
+      const categoryName = path.basename(filePath).split('.')[0];
+      let category = [categoryName];
+      if (typeof mod.default === 'object') {
+        const categoryString = mod.default.category;
+        if (typeof categoryString === 'string' && categoryString.length > 0) {
+          category = categoryString.split(/\s*\/\s*/);
         }
-        stories.push({
-          name,
-          filePath,
-          urlPath: getUniquePath([...category, name].join('-')),
-          propertyKey: key,
-          category,
-          params: entry.params,
-        });
       }
+      for (const key in mod) {
+        const entry = mod[key] as StoryComponent<unknown>;
+        if (typeof key === 'string' && key !== 'default' && typeof entry === 'function') {
+          let name = key;
+          if (typeof entry.storyName === 'string') {
+            name = entry.storyName;
+          } else if (name.endsWith('Story')) {
+            name = name.slice(0, -5);
+          }
+          stories.push({
+            name,
+            filePath,
+            urlPath: getUniquePath([...category, name].join('-')),
+            propertyKey: key,
+            category,
+            params: entry.params,
+          });
+        }
+      }
+    } catch (e) {
+      console.error('failed to load module', filePath)
     }
   }
   return stories;

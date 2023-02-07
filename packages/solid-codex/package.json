@@ -1,6 +1,6 @@
 {
   "name": "solid-codex",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "scripts": {
     "dev": "node dist/cli/index.mjs",
     "build": "solid-start build",
