@@ -38,11 +38,9 @@ export interface IStoryAttrs<T> {
   params?: { [k in keyof T]: unknown };
 }
 
-export type StoryFunction<T = object> = ((props: T) => JSX.Element) & IStoryAttrs<T>;
-export type StoryModule = { default: IStoryConfig } & Record<string, StoryFunction<unknown>>;
+export type StoryComponent<T = object> = ((props: T) => JSX.Element) & IStoryAttrs<T>;
+export type StoryModule = { default: IStoryConfig } & Record<string, StoryComponent<unknown>>;
 export type StoryDecorator = ParentComponent;
-
-// const [stories, setStories] = createStore<Record<string, string>>();
 
 export const storyIndex = async () => {
   const storyFiles = await globby(__STORY_PATTERNS__, {
@@ -62,7 +60,7 @@ export const storyIndex = async () => {
       }
     }
     for (const key in module) {
-      const entry = module[key] as StoryFunction<unknown>;
+      const entry = module[key] as StoryComponent<unknown>;
       if (typeof key === 'string' && key !== 'default' && typeof entry === 'function') {
         let name = key;
         if (typeof entry.storyName === 'string') {

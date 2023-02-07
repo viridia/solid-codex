@@ -21,6 +21,37 @@ export const ButtonStory = () => {
 };
 ```
 
+Codex will remove the 'Story' suffix from the component name but otherwise won't modify the name.
+You can customize the story name by assigning to the `.storyName` property:
+
+```tsx
+export const ButtonStory: StoryComponent = () => {
+  return <button>Hello, world!</button>;
+};
+ButtonStory.storyName = 'Basic button';
+```
+
+The `StoryComponent` type annotation is optional, but will allow story attributes to be set in
+a type-safe way.
+
+## Parameters
+
+You can add adjustable parameters to a story via the `.params` property:
+
+```ts
+ButtonStory.params = {
+  value: {
+    kind: 'number',
+    min: 0,
+    max: 20,
+    precision: 0,
+    default: 19,
+  },
+};
+```
+
+(More details to be written).
+
 ## Configuration
 
 Codex will look for configuration files in the `.codex` directory of your project. This directory
@@ -45,8 +76,6 @@ Within this directory, there are a few different files you can create and use:
 * fswatcher to see when story index needs to be refreshed.
 * string enums (and strings generally)
 * number precision
-* show story code (crash)
-* Fix appearance of catalog (theme, cursor)
 * highlight.js
-* fix ssr
+* fix ssr (currently disabled)
 * addons

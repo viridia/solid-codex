@@ -1,4 +1,4 @@
-import { StoryFunction } from 'solid-codex/stories';
+import { StoryComponent } from 'solid-codex/stories';
 import { createSignal, onCleanup, VoidComponent } from 'solid-js';
 
 const [count, setCount] = createSignal(0);
@@ -21,7 +21,7 @@ const Counter: VoidComponent<{ value: number }> = props => {
   );
 };
 
-export const CounterStory: StoryFunction<{ value: number }> = props => (
+export const CounterStory: StoryComponent<{ value: number, speed: number }> = props => (
   <Counter value={props?.value} />
 );
 CounterStory.storyName = 'Counter';
@@ -31,6 +31,13 @@ CounterStory.params = {
     min: 0,
     max: 20,
     precision: 0,
+    default: 19,
+  },
+  speed: {
+    kind: 'number',
+    min: 0,
+    max: 20,
+    precision: 1,
     default: 19,
   },
 };

@@ -8,7 +8,7 @@ import { batch, createEffect, createMemo, createSignal, onCleanup, Show } from '
 import { createStore, reconcile } from 'solid-js/store';
 import { StoryMessage } from '../data/message';
 import { createImportedModule } from '../data/module';
-import { StoryFunction } from '../data/stories';
+import { StoryComponent } from '../data/stories';
 import { Dynamic } from 'solid-js/web';
 
 export default function IframeApp() {
@@ -17,7 +17,7 @@ export default function IframeApp() {
   const [params, setParams] = createStore<Record<string, unknown>>({});
 
   const [configModule] = createImportedModule(__COMPONENTS__);
-  const headComponent = createMemo<StoryFunction | undefined>(() => {
+  const headComponent = createMemo<StoryComponent | undefined>(() => {
     return configModule()?.Head;
   });
 

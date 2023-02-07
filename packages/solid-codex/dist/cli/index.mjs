@@ -15,7 +15,7 @@ const wsRoot = searchForWorkspaceRoot(startDir);
         __STORY_PATTERNS__: JSON.stringify([path.join(defaultStoryRoot, '**/*.stories.tsx')]),
         __COMPONENTS__: JSON.stringify(null),
     };
-    // TODO: Merge with config in .codex if it exists.
+    // Vite config for codex server.
     let viteConfig = {
         plugins: [vanillaExtractPlugin(), solid({})],
         configFile: false,
@@ -66,29 +66,18 @@ const wsRoot = searchForWorkspaceRoot(startDir);
             if (fs.existsSync(componentsPath)) {
                 defines.__COMPONENTS__ = JSON.stringify(componentsPath);
             }
+            // Override user config.
             const userConfig = await loadConfigFromFile({
                 command: 'serve',
                 mode: 'dev',
             }, undefined, codexDir);
-            // let viteConfModule = await importIfExists<{ default: InlineConfig }>(
-            //   path.resolve(codexDir, 'vite.config.js')
-            // );
-            // if (!viteConfModule) {
-            //   viteConfModule = await importIfExists<{ default: InlineConfig }>(
-            //     path.resolve(codexDir, 'vite.config.mjs')
-            //   );
-            // }
-            // if (!viteConfModule) {
-            //   viteConfModule = await importIfExists<{ default: InlineConfig }>(
-            //     path.resolve(codexDir, 'vite.config.ts')
-            //   );
-            // }
-            console.log('userConfig', userConfig);
             if (userConfig) {
+                // TODO: Remove props from user config that we can't handle - root, etc.
                 viteConfig = mergeConfig(viteConfig, userConfig.config, true);
             }
             break;
         }
+        // Stop searching if we get to workspace root.
         if (dir === wsRoot) {
             break;
         }
@@ -101,7 +90,6 @@ const wsRoot = searchForWorkspaceRoot(startDir);
 async function importIfExists(filePath) {
     if (fs.existsSync(filePath)) {
         try {
-            // Process config.mjs file.
             return (await import(filePath /* @vite-ignore */));
         }
         catch (e) {

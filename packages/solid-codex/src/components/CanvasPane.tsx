@@ -1,10 +1,10 @@
-import { createMemo, createSignal, onMount, ParentComponent, Show } from 'solid-js';
+import { createEffect, createMemo, createSignal, onMount, ParentComponent, Show } from 'solid-js';
 import { VoidComponent } from 'solid-js';
 import { Store } from 'solid-js/store';
 import { Dynamic } from 'solid-js/web';
 import { createImportedModule } from '../data/module';
 import { ParamValues } from '../data/params';
-import { StoryDecorator, StoryFunction } from '../data/stories';
+import { StoryDecorator, StoryComponent } from '../data/stories';
 
 export const DecoratedStory: ParentComponent<{
   filePath: string;
@@ -15,6 +15,10 @@ export const DecoratedStory: ParentComponent<{
     return componentModule()?.[props.propertyKey];
   });
 
+  createEffect(() => {
+    console.log('comp', component()?.toString());
+  })
+
   return <Dynamic component={component()} children={props.children} />;
 };
 
@@ -24,7 +28,7 @@ export const RenderedStory: VoidComponent<{
   params: Store<ParamValues>;
 }> = props => {
   const [storyModule] = createImportedModule(props.filePath);
-  const component = createMemo<StoryFunction | undefined>(() => {
+  const component = createMemo<StoryComponent | undefined>(() => {
     return storyModule()?.[props.propertyKey];
   });
 

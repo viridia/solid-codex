@@ -36,7 +36,8 @@ const NumberParamControl: VoidComponent<{ name: string; param: INumberParam }> =
           value={params.values[props.name] as number}
           min={props.param.min ?? 0}
           max={props.param.max ?? 100}
-          step={1}
+          step={10 ** -(props.param.precision ?? 0)}
+          precision={props.param.precision ?? 0}
           valueLabelDisplay="auto"
           onChange={newValue => {
             params.setValues(props.name, newValue);
